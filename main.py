@@ -3,32 +3,45 @@ from discord.ext import commands
 import youtube_dl
 import random
 import requests
+import time
+import _thread
 client = commands.Bot(command_prefix='$')
+url2=[]
+last=0
 @client.event
-
-async def on_ready():
+async def on_ready(): #Ця команда виконуєтся при запуску бота
     print('Logged on')
 
+def stream(ctx):
+    p = 0
+    while True:
+        if(ctx.voice_client.is_playing()):
+            pass
+        else:
+            if(p<last):
+                p+=1
+                ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2[p], executable="D:/PyCharm Community Edition 2020.2.2/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"))
 
-def Dice(d):
+
+def Dice(d): #рахує конкретний кубик
     if(d==""): return 0
     else:
-        num=str()
-        d_type=str()
-        p=0
+        num=str() #кількість кубиків
+        d_type=str() #кількість граней
+        p=0 #pointer
         try:
-            while d[p]!="d":
+            while d[p]!="d":#йде вздовж тексту кубика поки не потрапить на d
                 num+=d[p]
                 p+=1
             p+=1
-            while p < len(d):
+            while p < len(d):#йде по тексту після d
                 d_type += d[p]
                 p += 1
-            num = int(num)
+            num = int(num) #робить з стрінгів числа
             d_type = int(d_type)
             part_res = 0
             for i in range(num):
-                part_res += random.randint(1, d_type)
+                part_res += random.randint(1, d_type)#рандомно кидає куби
             return part_res
         except IndexError:
             return int(num)
@@ -52,10 +65,10 @@ async def DnD_count(ctx):
 
 @client.command(pass_context=True)
 async def join(ctx):
-    voice = discord.utils.get(client.voice_clients, guild=ctx.guild)
+    voice = discord.utils.get(client.voice_clients, guild=ctx.guild) #отримує айді войсу в яку сидить бот
     if ctx.author.voice is None:
         await ctx.send("Ти не в войсі")
-    voice_channel=ctx.author.voice.channel
+    voice_channel=ctx.author.voice.channel #отримує айді войсу в яку сидить юзер
     if voice is None:
         await voice_channel.connect()
     else:
@@ -77,24 +90,26 @@ async def play(ctx, url):
     else:
         await voice.disconnect()
         await voice_channel.connect()
-    ctx.voice_client.stop()
-    YDL_OPTIONS = {'format': "bestaudio"}
+    #усе вище код команди join()
+    ctx.voice_client.stop() #зупиняє пісню що зараз грає бот. (якщо грає)
+    YDL_OPTIONS = {'format': "bestaudio"} #налаштування аудіо
 
     with youtube_dl.YoutubeDL(YDL_OPTIONS) as ydl:
-        info = ydl.extract_info(url, download=False)
+        info = ydl.extract_info(url, download=False) #качає відео в webp
         """
         print(info['entries'][0]['formats'][0]['url'])
         """
         try:
             if info['_type'] == 'playlist':
+                url2 = []
                 for i in range(len(info['entries'])):
-                    url2=[]
                     url2.append(info['entries'][i]['formats'][0]['url'])
-                ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2[0], executable="D:/PyCharm Community Edition 2020.2.2/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"))
-                await ctx.send("Плей листи поламані. (можу грати лише останній трек з плей листа)")
+                for i in range(len(info['entries'])):
+                    ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2[i], executable="D:/PyCharm Community Edition 2020.2.2/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"))
+                #await ctx.send("Плей листи поламані. (можу грати лише останній трек з плей листа)")
         except KeyError:
-            url2 = info['formats'][0]['url']
-            ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2, executable="D:/PyCharm Community Edition 2020.2.2/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"))
+            url2=info['formats'][0]['url']#дістає посилання
+            ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2, executable="D:/PyCharm Community Edition 2020.2.2/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe")) #запускає пісню через FFmpeg
 
 
 @client.command(pass_context=True)
@@ -129,6 +144,16 @@ async def find(ctx, item_type, item_name):
 @client.command(pass_context=True)
 async def fight_music(ctx):
     url="https://www.youtube.com/watch?v=htCcgpisgtk"
+    await play(ctx, url)
+
+@client.command(pass_context=True)
+async def boss_fight_music(ctx):
+    url="https://www.youtube.com/watch?v=jxzX3OHaGw8"
+    await play(ctx, url)
+
+@client.command(pass_context=True)
+async def DOOM_music(ctx):
+    url="https://www.youtube.com/watch?v=2XI7YwUMHEs"
     await play(ctx, url)
 
 @client.command(pass_context=True)
