@@ -20,7 +20,7 @@ def stream(ctx):
         else:
             if(p<last):
                 p+=1
-                ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2[p], executable="D:/PyCharm Community Edition 2020.2.2/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"))
+                ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2[p], executable="D:/PyCharm/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"))
 
 
 def Dice(d): #рахує конкретний кубик
@@ -105,11 +105,11 @@ async def play(ctx, url):
                 for i in range(len(info['entries'])):
                     url2.append(info['entries'][i]['formats'][0]['url'])
                 for i in range(len(info['entries'])):
-                    ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2[i], executable="D:/PyCharm Community Edition 2020.2.2/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"))
-                #await ctx.send("Плей листи поламані. (можу грати лише останній трек з плей листа)")
+                    ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2[i], executable="D:/PyCharm/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"))
+                await ctx.send("Плей листи поламані. (можу грати лише останній трек з плей листа)")
         except KeyError:
             url2=info['formats'][0]['url']#дістає посилання
-            ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2, executable="D:/PyCharm Community Edition 2020.2.2/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe")) #запускає пісню через FFmpeg
+            ctx.message.guild.voice_client.play(discord.FFmpegPCMAudio(url2, executable="D:/PyCharm/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe")) #запускає пісню через FFmpeg
 
 
 @client.command(pass_context=True)
@@ -157,16 +157,64 @@ async def DOOM_music(ctx):
     await play(ctx, url)
 
 @client.command(pass_context=True)
-async def normal_music(ctx):
+async def normal_music(ctx, type):
     url=["https://www.youtube.com/watch?v=wLlovxa3VJ0&t=896s", "https://www.youtube.com/watch?v=pgLjYsVP4H0", "https://www.youtube.com/watch?v=M0pOMVCUY50"]
-    i=random.randint(0,len(url)-1)
+    if(type==None): i = random.randint(0, len(url)-1)
+    else: i = type
     await play(ctx, url[i])
 
 @client.command(pass_context=True)
-async def dark_music(ctx):
+async def dark_music(ctx, type):
     url=["https://www.youtube.com/watch?v=415-xHoSwwA", "https://www.youtube.com/watch?v=0Fl9-359oeg&t=17s"]
-    i=random.randint(0,len(url)-1)
-    await play(ctx, url[i])
+    await play(ctx, url[type])
+
+@client.command(pass_context=True)
+async def dark_demon_music(ctx):
+    url="https://www.youtube.com/watch?v=bh1V-JmM-wU"
+    await play(ctx, url)
+
+@client.command(pass_context=True)
+async def dark_chill_music(ctx):
+    url="https://www.youtube.com/watch?v=FZEGMIYVKjw"
+    await play(ctx, url)
+
+@client.command(pass_context=True)
+async def rain_sound(ctx):
+    url="https://www.youtube.com/watch?v=gVKEM4K8J8A&t=1001s"
+    await play(ctx, url)
+
+@client.command(pass_context=True)
+async def tropical_music(ctx):
+    url="https://www.youtube.com/watch?v=bh1V-JmM-wU"
+    await play(ctx, url)
+
+@client.command(pass_context=True)
+async def horror_music(ctx):
+    url="https://youtu.be/qiZLHchtX8c"
+    await play(ctx, url)
+
+@client.command(pass_context=True)
+async def town_music(ctx):
+    url="https://youtu.be/Y4KX-owEk98"
+    await play(ctx, url)
+
+@client.command(pass_context=True)
+async def dark_piano_music(ctx):
+    # Прибери знак оклику з посилання
+    '''
+    url="http!s://www.youtube.com/watch?v=kI28ff5rZvc&t=762s"
+    await play(ctx, url)
+    '''
+    await ctx.send("Sorry but this music is reserved for the next company")
+
+@client.command(pass_context=True)
+async def originals_theme(ctx):
+    # Прибери знак оклику з посилання
+    '''
+    url="http!s://www.youtube.com/watch?v=Y6REvdXKuLo&t=1048s"
+    await play(ctx, url)
+    '''
+    await ctx.send("Sorry but this music is reserved for the next company")
 
 async def add_song(ctx):
     pass
