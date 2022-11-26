@@ -3,13 +3,11 @@ from discord.ext import commands
 import youtube_dl
 import random
 import requests
-import time
-import _thread
 
-ffmpeg_path="D:/PyCharm/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"
+ffmpeg_path = "D:/PyCharm/DiscordBot/ffmpeg/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe"
 client = commands.Bot(command_prefix='$')
-url2=[]
-last=0
+url2 = []
+last = 0
 
 @client.event
 async def on_ready(): #Ця команда виконуєтся при запуску бота
@@ -57,19 +55,26 @@ def Dice(d): #рахує конкретний кубик
 
 def count(text):
 
-    pointer = 11
+    pointer = 10
     part = str()
     res = 0
 
-    while pointer < len(text):
+    while pointer+1 < len(text):
 
-        if text[pointer] != '+':
-            part += text[pointer]
+        pointer += 1
+
+        if text[pointer] == '+':
+            res += Dice(part)
+            part = ""
             continue
 
-        res += Dice(part)
-        part = ""
-        pointer += 1
+        if text[pointer] == '-':
+            res -= Dice(part)
+            part = ""
+            continue
+
+        part += text[pointer]
+
 
     return res+Dice(part)
 
@@ -191,7 +196,7 @@ async def find(ctx, item_type, item_name):
 @client.command(pass_context=True)
 async def fight_music(ctx):
 
-    url="https://www.youtube.com/watch?v=htCcgpisgtk"
+    url="https://www.youtube.com/watch?v=LsOgIWGJRxc&t=232s"
     await play(ctx, url)
 
 @client.command(pass_context=True)
@@ -207,8 +212,9 @@ async def DOOM_music(ctx):
     await play(ctx, url)
 
 @client.command(pass_context=True)
-async def normal_music(ctx, type):
+async def normal_music(ctx):
 
+    type=random.randint(0, 2)
     url=["https://www.youtube.com/watch?v=wLlovxa3VJ0&t=896s",
          "https://www.youtube.com/watch?v=pgLjYsVP4H0",
          "https://www.youtube.com/watch?v=M0pOMVCUY50"
@@ -225,9 +231,10 @@ async def normal_music(ctx, type):
     await play(ctx, url[i])
 
 @client.command(pass_context=True)
-async def dark_music(ctx, type):
+async def dark_music(ctx):
 
-    url=["https://www.youtube.com/watch?v=415-xHoSwwA", "https://www.youtube.com/watch?v=0Fl9-359oeg&t=17s"]
+    type=0
+    url=["https://www.youtube.com/watch?v=VcO1do3Jafs", "https://www.youtube.com/watch?v=0Fl9-359oeg&t=17s"]
     await play(ctx, url[type])
 
 @client.command(pass_context=True)
@@ -251,7 +258,7 @@ async def rain_sound(ctx):
 @client.command(pass_context=True)
 async def tropical_music(ctx):
 
-    url="https://www.youtube.com/watch?v=bh1V-JmM-wU"
+    url="https://www.youtube.com/watch?v=-yEL0ZrpzE8"
     await play(ctx, url)
 
 @client.command(pass_context=True)
@@ -267,21 +274,27 @@ async def town_music(ctx):
     await play(ctx, url)
 
 @client.command(pass_context=True)
+async def bar_music(ctx):
+
+    url="https://youtu.be/1cyQU6VYAD8"
+    await play(ctx, url)
+
+@client.command(pass_context=True)
 async def dark_piano_music(ctx):
     # Прибери знак оклику з посилання
-    '''
-    url="http!s://www.youtube.com/watch?v=kI28ff5rZvc&t=762s"
-    await play(ctx, url)
-    '''
+
+    #url="https://www.youtube.com/watch?v=kI28ff5rZvc&t=762s"
+    #await play(ctx, url)
+
     await ctx.send("Sorry but this music is reserved for the next company")
 
 @client.command(pass_context=True)
 async def originals_theme(ctx):
     # Прибери знак оклику з посилання
-    '''
-    url="http!s://www.youtube.com/watch?v=Y6REvdXKuLo&t=1048s"
-    await play(ctx, url)
-    '''
+
+    #url="https://www.youtube.com/watch?v=Y6REvdXKuLo&t=1048s"
+    #await play(ctx, url)
+
     await ctx.send("Sorry but this music is reserved for the next company")
 
 
